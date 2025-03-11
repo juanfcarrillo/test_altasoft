@@ -11,7 +11,10 @@ export default function VerifyOTP() {
   const [tokenHash, setTokenHash] = useState('');
 
   const verifyOTP = async () => {
-    if (!tokenHash) {
+    const token = params.token as string;
+    const email = params.email as string;
+
+    if (!token || !email) {
       Alert.alert('Error', 'Missing token or email');
       return;
     }
@@ -29,6 +32,17 @@ export default function VerifyOTP() {
       if (error) throw error;
 
       if (session) {
+        const { error: updateError } = await supabase
+          .from('invitations')
+          .update({
+            status: 'active',
+            user_id: session.user.id,
+          })
+          .eq('email', email)
+          .eq('status', 'pending');
+
+        if (updateError) throw updateError;
+
         router.replace('/');
       }
     } catch (error: any) {
@@ -38,12 +52,6 @@ export default function VerifyOTP() {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (params.token_hash) {
-      setTokenHash(params.token_hash as string);
-    }
-  }, [params]);
 
   useEffect(() => {
     if (tokenHash) {

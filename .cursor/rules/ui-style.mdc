@@ -1,0 +1,65 @@
+---
+description: This rules define the how the ui should look and work
+globs: *.tsx
+---
+Theme Rules & Design Principles:
+
+UI Framework:
+
+Use native wind for making all of the ui components
+
+Color Palette:
+
+Primary:
+#1E293B (Dark Slate Gray): This provides a professional and tech-focused feel. It's easy on the eyes for extended use.
+Secondary:
+#64748B (Cool Gray): Used for secondary elements, subtle highlights, and background variations.
+Accent:
+#38BDF8 (Light Blue): Used for interactive elements (buttons, links), indicating active states and important information. This color is associated with connectivity and data flow.
+Background:
+#F9FAFB (Light Gray): A clean, neutral background that minimizes distractions.
+Text:
+#0F172A (Dark Navy): Ensures high contrast and readability.
+#E2E8F0 (Light Gray): For secondary text and hints.
+Error/Warning:
+#EF4444 (Red): For errors.
+#F59E0B (Yellow): For warnings.
+Typography:
+
+Font Family: Use a clean, monospaced font for code snippets (e.g., "Courier New", "Roboto Mono") and a sans-serif font for general text (e.g., "Roboto", "Open Sans").
+Font Sizes:
+Body Text: 16px
+Headings: 18px-24px (depending on hierarchy)
+Code Snippets: 14px
+Line Height: 1.5-1.6 for comfortable reading.
+Layout & Spacing:
+
+Minimalist Layout: Prioritize a clean, uncluttered interface. Use ample white space to improve readability and reduce visual noise.
+Padding & Margins: Use consistent padding and margins to create visual separation and improve the app's overall structure.
+Component Design:
+
+Chat Bubbles:
+User Messages: Light gray background (#E2E8F0) with dark text (#0F172A).
+AI Messages: White background (#FFFFFF) with dark text (#0F172A).
+Use rounded corners for chat bubbles to create a softer, more approachable feel.
+Input Field:
+A simple, clean input field with a subtle border.
+Use the accent color (#38BDF8) for the input field's focus state.
+Buttons:
+Flat design with rounded corners.
+Use the accent color (#38BDF8) for primary buttons and a lighter shade of gray for secondary buttons.
+Use a subtle hover effect to indicate interactivity.
+Chat List:
+A simple list with clear titles and timestamps.
+Use subtle dividers to separate chat items.
+Code Snippets:
+Use a dark background (#2D3748) with light text (#E2E8F0) for code snippets.
+Provide a "Copy" button for easy code copying.
+Use syntax highlighting to improve code readability.
+Links:
+Use the accent color (#38BDF8) for links.
+Use an underline or hover effect to indicate links.
+Loading Indicator:
+A simple, circular loading indicator in the accent color (#38BDF8).
+
+Remember to use the tailwind config for better consistency

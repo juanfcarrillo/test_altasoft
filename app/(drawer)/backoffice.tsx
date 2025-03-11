@@ -46,10 +46,17 @@ export default function Backoffice() {
 
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithOtp({
+      // const { data, error } = await supabase.auth.signInWithOtp({
+      //   email: email.trim(),
+      //   options: {
+      //     emailRedirectTo: redirectTo + '/auth/verify',
+      //   },
+      // });
+
+      const { error } = await supabase.auth.signInWithOtp({
         email: email.trim(),
         options: {
-          emailRedirectTo: redirectTo,
+          emailRedirectTo: redirectTo + '/auth/verify',
         },
       });
 

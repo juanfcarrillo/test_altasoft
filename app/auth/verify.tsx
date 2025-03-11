@@ -9,12 +9,10 @@ export default function VerifyOTP() {
   const params = useGlobalSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [tokenHash, setTokenHash] = useState('');
+  const [email, setEmail] = useState('');
 
   const verifyOTP = async () => {
-    const token = params.token as string;
-    const email = params.email as string;
-
-    if (!token || !email) {
+    if (!tokenHash || !email) {
       Alert.alert('Error', 'Missing token or email');
       return;
     }
@@ -54,10 +52,19 @@ export default function VerifyOTP() {
   };
 
   useEffect(() => {
+    if (params.email) {
+      setEmail(params.email as string);
+    }
+    if (params.token) {
+      setTokenHash(params.token as string);
+    }
+  }, [params]);
+
+  useEffect(() => {
     if (tokenHash) {
       verifyOTP();
     }
-  }, [tokenHash]);
+  }, [tokenHash, email]);
 
   if (isLoading) {
     return (

@@ -85,15 +85,6 @@ export default function Backoffice() {
 
     setIsLoading(true);
     try {
-      // First create invitation record
-      const { error: inviteError } = await supabase.from('invitations').insert({
-        email: email.trim(),
-        invited_by: user?.id,
-      });
-
-      if (inviteError) throw inviteError;
-
-      // Then send magic link
       const { error } = await supabase.auth.signInWithOtp({
         email: email.trim(),
         options: {
@@ -102,6 +93,13 @@ export default function Backoffice() {
       });
 
       if (error) throw error;
+
+      const { error: inviteError } = await supabase.from('invitations').insert({
+        email: email.trim(),
+        invited_by: user?.id,
+      });
+
+      if (inviteError) throw inviteError;
 
       Alert.alert('Success', 'Invitation sent successfully');
       setEmail('');

@@ -1,7 +1,10 @@
+import { makeRedirectUri } from 'expo-auth-session';
 import { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
 
 import { supabase } from '../../utils/supabase';
+
+const redirectTo = makeRedirectUri();
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -15,7 +18,7 @@ export default function SignIn() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: 'yourapp://auth/verify',
+          emailRedirectTo: redirectTo,
         },
       });
 

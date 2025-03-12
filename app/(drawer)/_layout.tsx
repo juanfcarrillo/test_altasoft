@@ -2,7 +2,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { Link, Redirect } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import { View, ActivityIndicator, Text } from 'react-native';
+import { View, ActivityIndicator, Text, Pressable } from 'react-native';
 
 import { HeaderButton } from '../../components/HeaderButton';
 import { useAuth } from '../../context/AuthContext';
@@ -39,6 +39,12 @@ const DrawerLayout = () => {
 
         {/* Sign out button at bottom */}
         <View className="border-t border-gray-200">
+          <Link href="/backoffice" asChild>
+            <Pressable className="flex-row items-center p-4">
+              <MaterialIcons name="settings" size={24} color="#64748B" />
+              <Text className="ml-3 text-gray-600">Manage Invitations</Text>
+            </Pressable>
+          </Link>
           <SignOutButton />
         </View>
       </View>
@@ -63,18 +69,14 @@ const DrawerLayout = () => {
         }}
       />
       <Drawer.Screen
-        name="(tabs)"
+        name="backoffice"
         options={{
-          headerTitle: 'Tabs',
-          drawerLabel: 'Tabs',
+          headerTitle: 'Manage Invitations',
+          drawerLabel: 'Manage Invitations',
           drawerIcon: ({ size, color }) => (
-            <MaterialIcons name="border-bottom" size={size} color={color} />
+            <MaterialIcons name="settings" size={size} color={color} />
           ),
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <HeaderButton />
-            </Link>
-          ),
+          drawerItemStyle: { display: 'none' },
         }}
       />
     </Drawer>

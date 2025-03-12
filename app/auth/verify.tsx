@@ -18,6 +18,7 @@ export default function VerifyOTP() {
     }
 
     setIsLoading(true);
+
     try {
       const {
         data: { session },
@@ -55,8 +56,8 @@ export default function VerifyOTP() {
     if (params.email) {
       setEmail(params.email as string);
     }
-    if (params.token) {
-      setTokenHash(params.token as string);
+    if (params.token_hash) {
+      setTokenHash(params.token_hash as string);
     }
   }, [params]);
 

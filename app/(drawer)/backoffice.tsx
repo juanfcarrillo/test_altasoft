@@ -88,7 +88,7 @@ export default function Backoffice() {
       const { error } = await supabase.auth.signInWithOtp({
         email: email.trim(),
         options: {
-          emailRedirectTo: redirectTo + '/auth/verify',
+          emailRedirectTo: redirectTo,
         },
       });
 
@@ -193,7 +193,6 @@ export default function Backoffice() {
                   {invitation.status === 'pending' && (
                     <TouchableOpacity
                       onPress={() => {
-                        // Resend invitation
                         sendInvitation();
                         Alert.alert('Success', 'Invitation resent successfully');
                       }}

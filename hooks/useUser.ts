@@ -29,7 +29,7 @@ export function useUser() {
     const fetchUser = async () => {
       try {
         const { data, error } = await supabase
-          .from('users')
+          .from('customers')
           .select('*')
           .eq('id', session.user.id)
           .single();
@@ -50,13 +50,13 @@ export function useUser() {
 
     // Subscribe to realtime changes
     const channel = supabase
-      .channel(`public:users:id=eq.${session.user.id}`)
+      .channel(`public:customers:id=eq.${session.user.id}`)
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'users',
+          table: 'customers',
           filter: `id=eq.${session.user.id}`,
         },
         (payload) => {

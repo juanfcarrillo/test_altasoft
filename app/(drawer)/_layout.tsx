@@ -1,16 +1,24 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import { Link, Redirect } from 'expo-router';
+import { Link, Redirect, useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import { View, ActivityIndicator, Text, Pressable } from 'react-native';
+import { View, ActivityIndicator, Text, Pressable, ScrollView } from 'react-native';
 
-import { HeaderButton } from '../../components/HeaderButton';
 import { useAuth } from '../../context/AuthContext';
+import { useChat } from '../../context/ChatContext';
 
 import SignOutButton from '~/components/SignOutButton';
 
 const DrawerLayout = () => {
   const { session, loading } = useAuth();
+  const { chats, currentChat, createChat } = useChat();
+  const router = useRouter();
+
+  const handleNewChat = async () => {
+    const chatId = await createChat();
+    if (chatId) {
+      router.push(`/chat/${chatId}`);
+    }
+  };
 
   if (loading) {
     return (
@@ -21,7 +29,7 @@ const DrawerLayout = () => {
   }
 
   if (!session) {
-    return <Redirect href="/auth/verify" />;
+    return <Redirect href="/auth/sign-in" />;
   }
 
   function CustomDrawerContent(props: any) {
@@ -32,10 +40,33 @@ const DrawerLayout = () => {
           <Text className="text-lg font-semibold text-gray-800">{session?.user.email}</Text>
         </View>
 
-        {/* Drawer items */}
-        <DrawerContentScrollView {...props}>
-          <DrawerItemList {...props} />
-        </DrawerContentScrollView>
+        <View className="flex-1 border-b border-gray-200">
+          <View className="flex-row items-center justify-between p-4">
+            <Text className="text-sm font-medium text-gray-600">Recent Chats</Text>
+            <Pressable className="rounded-md bg-[#38BDF8] px-3 py-1" onPress={handleNewChat}>
+              <Text className="text-sm text-white">New Chat</Text>
+            </Pressable>
+          </View>
+          <ScrollView className="flex-1">
+            {chats.map((chat) => (
+              <Link key={chat.id} href={`/chat/${chat.id}`} asChild>
+                <Pressable className="rounded-md px-3 py-1">
+                  <Ionicons
+                    name="chatbubble-outline"
+                    size={20}
+                    color={currentChat?.id === chat.id ? '#38BDF8' : '#64748B'}
+                  />
+                  <View className="ml-3 flex-1">
+                    <Text className="text-gray-800">{chat.title}</Text>
+                    <Text className="text-sm text-gray-500" numberOfLines={1}>
+                      {chat.messages[chat.messages.length - 1]?.content.substring(0, 30)}...
+                    </Text>
+                  </View>
+                </Pressable>
+              </Link>
+            ))}
+          </ScrollView>
+        </View>
 
         {/* Sign out button at bottom */}
         <View className="border-t border-gray-200">
@@ -66,6 +97,13 @@ const DrawerLayout = () => {
           drawerIcon: ({ size, color }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
+        }}
+      />
+      <Drawer.Screen
+        name="chat/[id]"
+        options={{
+          headerTitle: 'Chat',
+          drawerItemStyle: { display: 'none' }, // Hide from drawer
         }}
       />
       <Drawer.Screen

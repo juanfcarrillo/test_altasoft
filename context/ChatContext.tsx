@@ -6,7 +6,7 @@ import { Chat, Message } from '../src/models/chat';
 interface ChatContextType {
   chats: Chat[];
   currentChat: Chat | null;
-  createChat: () => Promise<void>;
+  createChat: () => Promise<number>;
   updateChatTitle: (chatId: number, newTitle: string) => Promise<void>;
   addMessage: (chatId: number, message: Message) => Promise<void>;
   setCurrentChat: (chat: Chat) => void;
@@ -65,6 +65,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setChats(updatedChats);
     setCurrentChat(newChat);
     await saveChats(updatedChats);
+    return newChat.id;
   };
 
   const updateChatTitle = async (chatId: number, newTitle: string) => {

@@ -1,4 +1,5 @@
 import { makeRedirectUri } from 'expo-auth-session';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
 
@@ -14,17 +15,19 @@ export default function SignIn() {
     if (!email) return;
 
     setLoading(true);
+
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: redirectTo,
+      const { error } = await supabase.functions.invoke('create_magic_link', {
+        body: {
+          email,
+          redirectTo: redirectTo + '/auth/verify',
+        },
+        headers: {
+          Authorization: '',
         },
       });
 
       if (error) throw error;
-
-      Alert.alert('Check your email', 'We sent you a magic link to sign in');
     } catch (error: any) {
       Alert.alert('Error', error.message);
     } finally {

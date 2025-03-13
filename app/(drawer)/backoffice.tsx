@@ -85,12 +85,14 @@ export default function Backoffice() {
 
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: email.trim(),
-        options: {
-          emailRedirectTo: redirectTo,
+      const { data, error } = await supabase.functions.invoke('create_magic_link', {
+        body: {
+          email: email.trim(),
+          redirectTo,
         },
       });
+
+      console.log('data', data);
 
       if (error) throw error;
 

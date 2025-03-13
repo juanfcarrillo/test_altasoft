@@ -92,10 +92,10 @@ export default function Backoffice() {
 
       if (sessionError) throw sessionError;
 
-      const { data, error } = await supabase.functions.invoke('create_magic_link', {
+      const { error } = await supabase.functions.invoke('create_magic_link', {
         body: {
           email,
-          redirectTo,
+          redirectTo: redirectTo + '/auth/verify',
         },
         headers: {
           Authorization: `Bearer ${session?.access_token}`,

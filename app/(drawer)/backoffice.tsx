@@ -85,14 +85,22 @@ export default function Backoffice() {
 
     setIsLoading(true);
     try {
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError) throw sessionError;
+
       const { data, error } = await supabase.functions.invoke('create_magic_link', {
         body: {
-          email: email.trim(),
+          email,
           redirectTo,
         },
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
       });
-
-      console.log('data', data);
 
       if (error) throw error;
 

@@ -1,5 +1,4 @@
 import { makeRedirectUri } from 'expo-auth-session';
-import { router } from 'expo-router';
 import { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
 

@@ -4,6 +4,7 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
+import { sendGmailConfirmationMail } from '../_shared/sendConfirmationMail.ts';
 import { supabaseAdmin } from '../_shared/supabaseAdmin.ts';
 import { supabaseClient } from '../_shared/supabaseClient.ts';
 
@@ -14,16 +15,17 @@ Deno.serve(async (req: Request) => {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+        'Access-Control-Allow-Headers': '*',
       },
     });
   }
 
   const authHeader = req.headers.get('Authorization')!;
   const body = await req.json();
+
   const { email, redirectTo } = body;
 
-  if (!authHeader || authHeader !== '') {
+  if (!authHeader || authHeader.trim() === '') {
     const { data, error } = await supabaseAdmin
       .from('customers')
       .select('*')
@@ -44,7 +46,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const { error: otpError } = await supabaseAdmin.auth.admin.generateLink({
+    const { error: otpError, data: otpData } = await supabaseAdmin.auth.admin.generateLink({
       type: 'magiclink',
       email,
       options: {
@@ -59,7 +61,26 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    return new Response(null, { status: 200 });
+    const queryParams = new URLSearchParams({
+      token_hash: otpData.properties.hashed_token,
+      email,
+    });
+
+    const magiclink = `${redirectTo}?${queryParams.toString()}`;
+
+    await sendGmailConfirmationMail({
+      from: 'PingAI <noreply@pingai.com>',
+      to: email,
+      subject: 'Confirm your email address',
+      text: `Please click the link below to confirm your email address:
+        ${magiclink}
+      `,
+    });
+
+    return new Response(JSON.stringify({ status: 'created email' }), {
+      status: 200,
+      headers: { 'Access-Control-Allow-Origin': '*' },
+    });
   }
 
   const token = authHeader.replace('Bearer ', '');
@@ -69,14 +90,21 @@ Deno.serve(async (req: Request) => {
     error,
   } = await supabaseClient.auth.getUser(token);
 
-  if (error) {
+  const { data: customer, error: customerError } = await supabaseAdmin
+    .from('customers')
+    .select('*')
+    .eq('email', user?.email!)
+    .eq('id', user?.id!)
+    .single();
+
+  if (error || customerError) {
     return new Response(JSON.stringify({ error }), {
       status: 401,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
     });
   }
 
-  if (!user || user.role !== 'admin') {
+  if (!user || customer?.role !== 'admin') {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
@@ -104,8 +132,17 @@ Deno.serve(async (req: Request) => {
   });
 
   const token_hash = otpData.properties.hashed_token;
-  const magiclink = `${redirectTo}/auth/verify?${queryParams.toString()}`;
-  const redirectRoute = `/auth/verify?${queryParams.toString()}`;
+  const magiclink = `${redirectTo}?${queryParams.toString()}`;
+  const redirectRoute = `?${queryParams.toString()}`;
+
+  await sendGmailConfirmationMail({
+    from: 'PingAI <noreply@pingai.com>',
+    to: email,
+    subject: 'Confirm your email address',
+    text: `Please click the link below to confirm your email address:
+      ${magiclink}
+    `,
+  });
 
   return new Response(
     JSON.stringify({

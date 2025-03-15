@@ -6,9 +6,35 @@ import { supabase } from '../../utils/supabase';
 
 const redirectTo = makeRedirectUri();
 
+interface ConfirmationModalProps {
+  isVisible: boolean;
+  onClose: () => void;
+}
+
+function ConfirmationModal({ isVisible, onClose }: ConfirmationModalProps) {
+  if (!isVisible) return null;
+
+  return (
+    <View className="absolute inset-0 flex items-center justify-center bg-black/50">
+      <View className="m-4 w-full max-w-sm rounded-lg bg-white p-6 shadow-xl">
+        <Text className="text-lg font-semibold text-gray-800">Check Your Email</Text>
+        <Text className="mt-2 text-gray-600">
+          We've sent you a magic link to sign in. Please check your email inbox.
+        </Text>
+        <View className="mt-6 flex-row justify-end">
+          <TouchableOpacity onPress={onClose} className="rounded-lg bg-sky-500 px-4 py-2">
+            <Text className="font-medium text-white">OK</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+}
+
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleSignIn = async () => {
     if (!email) return;
@@ -33,6 +59,7 @@ export default function SignIn() {
       });
 
       if (error) throw error;
+      setShowModal(true);
     } catch (error: any) {
       Alert.alert('Error', error.message);
     } finally {
@@ -61,6 +88,7 @@ export default function SignIn() {
           </Text>
         </TouchableOpacity>
       </View>
+      <ConfirmationModal isVisible={showModal} onClose={() => setShowModal(false)} />
     </View>
   );
 }

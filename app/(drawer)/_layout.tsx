@@ -112,8 +112,8 @@ const DrawerLayout = () => {
       <Drawer.Screen
         name="chat/[id]"
         options={{
-          headerTitle: 'Chat',
-          drawerItemStyle: { display: 'none' }, // Hide from drawer
+          headerTitle: currentChat?.title || 'Chat',
+          drawerItemStyle: { display: 'none' },
         }}
       />
       <Drawer.Screen

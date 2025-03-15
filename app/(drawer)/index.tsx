@@ -15,11 +15,26 @@ import {
 
 import { useChat } from '../../context/ChatContext';
 
+import { EditTitleModal } from '~/components/EditTitleModalProps';
+
 export default function Home() {
   const { currentChat, createChat, updateChatTitle, addMessage } = useChat();
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  const [editTitleModal, setEditTitleModal] = useState(false);
+
+  const handleEditTitle = () => {
+    if (!currentChat) return;
+    setEditTitleModal(true);
+  };
+
+  const handleConfirmTitleEdit = (newTitle: string) => {
+    if (currentChat && newTitle.trim()) {
+      updateChatTitle(currentChat.id, newTitle.trim());
+    }
+    setEditTitleModal(false);
+  };
 
   const handleSend = async () => {
     if (!message.trim() || !currentChat) return;
@@ -44,28 +59,6 @@ export default function Home() {
       Alert.alert('Error', 'Failed to send message');
       setIsLoading(false);
     }
-  };
-
-  const handleEditTitle = () => {
-    if (!currentChat) return;
-
-    Alert.prompt(
-      'Edit Chat Title',
-      'Enter a new title for this chat:',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'OK',
-          onPress: (newTitle?: string) => {
-            if (newTitle?.trim() && currentChat) {
-              updateChatTitle(currentChat.id, newTitle.trim());
-            }
-          },
-        },
-      ],
-      'plain-text',
-      currentChat.title
-    );
   };
 
   async function makeApiCall() {
@@ -204,6 +197,12 @@ export default function Home() {
           </View>
         </View>
       </View>
+      <EditTitleModal
+        isVisible={editTitleModal}
+        onClose={() => setEditTitleModal(false)}
+        onConfirm={handleConfirmTitleEdit}
+        currentTitle={currentChat.title}
+      />
     </KeyboardAvoidingView>
   );
 }

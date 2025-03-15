@@ -8,6 +8,33 @@ import { sendGmailConfirmationMail } from '../_shared/sendConfirmationMail.ts';
 import { supabaseAdmin } from '../_shared/supabaseAdmin.ts';
 import { supabaseClient } from '../_shared/supabaseClient.ts';
 
+function buildMagicLink(
+  redirectTo: string,
+  tokenHash: string,
+  email: string,
+  deepLinkUrl?: string
+) {
+  const queryParams = new URLSearchParams({
+    email,
+    token_hash: tokenHash,
+  });
+
+  if (deepLinkUrl) {
+    const deepLinkAuthUrl = new URL(deepLinkUrl);
+    deepLinkAuthUrl.searchParams.set('email', email);
+    deepLinkAuthUrl.searchParams.set('token_hash', tokenHash);
+
+    const redirectUrl = new URL(redirectTo);
+    redirectUrl.searchParams.set('deeplink_url', deepLinkAuthUrl.toString());
+
+    return redirectUrl.toString();
+  }
+
+  const magiclink = `${redirectTo}?${queryParams.toString()}`;
+
+  return magiclink;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
@@ -23,7 +50,7 @@ Deno.serve(async (req: Request) => {
   const authHeader = req.headers.get('Authorization')!;
   const body = await req.json();
 
-  const { email, redirectTo } = body;
+  const { email, redirectTo, deepLinkUrl } = body;
 
   if (!authHeader || authHeader.trim() === '') {
     const { data, error } = await supabaseAdmin
@@ -61,12 +88,12 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const queryParams = new URLSearchParams({
-      token_hash: otpData.properties.hashed_token,
+    const magiclink = buildMagicLink(
+      redirectTo,
+      otpData.properties.hashed_token,
       email,
-    });
-
-    const magiclink = `${redirectTo}?${queryParams.toString()}`;
+      deepLinkUrl
+    );
 
     await sendGmailConfirmationMail({
       from: 'PingAI <noreply@pingai.com>',
@@ -129,14 +156,7 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  const queryParams = new URLSearchParams({
-    token_hash: otpData.properties.hashed_token,
-    email,
-  });
-
-  const token_hash = otpData.properties.hashed_token;
-  const magiclink = `${redirectTo}?${queryParams.toString()}`;
-  const redirectRoute = `?${queryParams.toString()}`;
+  const magiclink = buildMagicLink(redirectTo, otpData.properties.hashed_token, email, deepLinkUrl);
 
   await sendGmailConfirmationMail({
     from: 'PingAI <noreply@pingai.com>',
@@ -152,10 +172,9 @@ Deno.serve(async (req: Request) => {
 
   return new Response(
     JSON.stringify({
-      token_hash,
+      token_hash: otpData.properties.hashed_token,
       email,
       magiclink,
-      redirectRoute,
     }),
     { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
   );

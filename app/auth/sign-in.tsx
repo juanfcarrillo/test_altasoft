@@ -1,6 +1,6 @@
 import { makeRedirectUri } from 'expo-auth-session';
 import { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, Alert, Platform } from 'react-native';
 
 import { supabase } from '../../utils/supabase';
 
@@ -15,11 +15,17 @@ export default function SignIn() {
 
     setLoading(true);
 
+    const redirectUri = new URL(
+      Platform.OS === 'web' ? redirectTo : process.env.EXPO_PUBLIC_WEBSITE_URL!
+    );
+    redirectUri.pathname = '/auth/verify';
+
     try {
       const { error } = await supabase.functions.invoke('create_magic_link', {
         body: {
           email,
-          redirectTo: redirectTo + '/auth/verify',
+          redirectTo: redirectUri.toString(),
+          deepLinkUrl: Platform.OS !== 'web' ? redirectTo + '/auth/verify' : undefined,
         },
         headers: {
           Authorization: '',

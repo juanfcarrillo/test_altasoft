@@ -59,6 +59,10 @@ export default function VerifyOTP() {
     if (params.token_hash) {
       setTokenHash(params.token_hash as string);
     }
+
+    if (params.deeplink_url) {
+      window.location.href = params.deeplink_url as string;
+    }
   }, [params]);
 
   useEffect(() => {

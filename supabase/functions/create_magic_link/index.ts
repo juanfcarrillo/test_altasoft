@@ -75,6 +75,9 @@ Deno.serve(async (req: Request) => {
       text: `Please click the link below to confirm your email address:
         ${magiclink}
       `,
+      html: `Please click the link below to confirm your email address:
+        <a href="${magiclink}">${magiclink}</a>
+      `,
     });
 
     return new Response(JSON.stringify({ status: 'created email' }), {
@@ -141,6 +144,9 @@ Deno.serve(async (req: Request) => {
     subject: 'Confirm your email address',
     text: `Please click the link below to confirm your email address:
       ${magiclink}
+    `,
+    html: `Please click the link below to confirm your email address:
+      <a href="${magiclink}">${magiclink}</a>
     `,
   });
 

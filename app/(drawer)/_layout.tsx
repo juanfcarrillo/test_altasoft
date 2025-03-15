@@ -7,10 +7,12 @@ import { useAuth } from '../../context/AuthContext';
 import { useChat } from '../../context/ChatContext';
 
 import SignOutButton from '~/components/SignOutButton';
+import { useUser } from '~/hooks/useUser';
 
 const DrawerLayout = () => {
   const { session, loading } = useAuth();
   const { chats, currentChat, createChat } = useChat();
+  const { user } = useUser();
   const router = useRouter();
 
   const handleNewChat = async () => {
@@ -76,6 +78,14 @@ const DrawerLayout = () => {
               <Text className="ml-3 text-gray-600">Manage Invitations</Text>
             </Pressable>
           </Link>
+          {user?.role === 'admin' && (
+            <Link href="/documents" asChild>
+              <Pressable className="flex-row items-center p-4">
+                <MaterialIcons name="file-upload" size={24} color="#64748B" />
+                <Text className="ml-3 text-gray-600">Manage Documents</Text>
+              </Pressable>
+            </Link>
+          )}
           <SignOutButton />
         </View>
       </View>
@@ -115,6 +125,19 @@ const DrawerLayout = () => {
             <MaterialIcons name="settings" size={size} color={color} />
           ),
           drawerItemStyle: { display: 'none' },
+        }}
+      />
+      <Drawer.Screen
+        name="documents"
+        options={{
+          headerTitle: 'Manage Documents',
+          drawerLabel: 'Manage Documents',
+          drawerIcon: ({ size, color }) => (
+            <MaterialIcons name="file-upload" size={size} color={color} />
+          ),
+          drawerItemStyle: {
+            display: session?.user.role === 'admin' ? 'flex' : 'none',
+          },
         }}
       />
     </Drawer>

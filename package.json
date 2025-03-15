@@ -13,7 +13,9 @@
     "prebuild": "expo prebuild",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "dev": "expo start",
+    "dev:functions": "supabase functions serve --no-verify-jwt"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
@@ -43,7 +45,8 @@
     "react-native-web": "~0.19.10",
     "zustand": "^4.5.1",
     "expo-auth-session": "~6.0.3",
-    "expo-crypto": "~14.0.2"
+    "expo-crypto": "~14.0.2",
+    "expo-document-picker": "~13.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -132,6 +132,16 @@ export type Database = {
             }
             Returns: unknown
           }
+      get_grouped_documents: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          name: string
+          title: string
+          author: string
+          type: string
+          pages: number
+        }[]
+      }
       halfvec_avg: {
         Args: {
           "": number[]

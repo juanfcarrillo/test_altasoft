@@ -55,6 +55,7 @@ export async function sendGmailConfirmationMail(options: {
   to: string;
   subject: string;
   text: string;
+  html?: string;
 }) {
   await sendEmail({
     from: options.from,
@@ -62,5 +63,6 @@ export async function sendGmailConfirmationMail(options: {
     subject: options.subject,
     text: options.text,
     smtp: gmailSmpt,
+    html: options.html,
   });
 }

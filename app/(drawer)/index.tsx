@@ -76,7 +76,7 @@ export default function Home() {
       };
 
       const response = await fetch(
-        'https://testaltasoft.app.n8n.cloud/webhook/e21a4376-8de6-40d8-adcc-e59c5d4c3d22',
+        'https://n8n.pingai.online/webhook/e21a4376-8de6-40d8-adcc-e59c5d4c3d22',
         options
       );
       const data = await response.json();

@@ -91,8 +91,6 @@ export default function DocumentsScreen() {
       // TODO: Implement your API call to fetch documents
       const { data, error } = await supabase.rpc('get_grouped_documents');
 
-      console.log('data', data);
-
       if (error) throw error;
       setDocuments(data || []);
     } catch (error) {
@@ -106,7 +104,7 @@ export default function DocumentsScreen() {
     fetchDocuments();
   }, []);
 
-  if (!session || user?.role !== 'admin') {
+  if (user && (!session || user?.role !== 'admin')) {
     return <Redirect href="/" />;
   }
 

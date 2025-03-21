@@ -72,19 +72,21 @@ const DrawerLayout = () => {
 
         {/* Sign out button at bottom */}
         <View className="border-t border-gray-200">
-          <Link href="/backoffice" asChild>
-            <Pressable className="flex-row items-center p-4">
-              <MaterialIcons name="settings" size={24} color="#64748B" />
-              <Text className="ml-3 text-gray-600">Manage Invitations</Text>
-            </Pressable>
-          </Link>
           {user?.role === 'admin' && (
-            <Link href="/documents" asChild>
-              <Pressable className="flex-row items-center p-4">
-                <MaterialIcons name="file-upload" size={24} color="#64748B" />
-                <Text className="ml-3 text-gray-600">Manage Documents</Text>
-              </Pressable>
-            </Link>
+            <>
+              <Link href="/backoffice" asChild>
+                <Pressable className="flex-row items-center p-4">
+                  <MaterialIcons name="settings" size={24} color="#64748B" />
+                  <Text className="ml-3 text-gray-600">Manage Invitations</Text>
+                </Pressable>
+              </Link>
+              <Link href="/documents" asChild>
+                <Pressable className="flex-row items-center p-4">
+                  <MaterialIcons name="file-upload" size={24} color="#64748B" />
+                  <Text className="ml-3 text-gray-600">Manage Documents</Text>
+                </Pressable>
+              </Link>
+            </>
           )}
           <SignOutButton />
         </View>
@@ -136,7 +138,7 @@ const DrawerLayout = () => {
             <MaterialIcons name="file-upload" size={size} color={color} />
           ),
           drawerItemStyle: {
-            display: session?.user.role === 'admin' ? 'flex' : 'none',
+            display: 'none',
           },
         }}
       />

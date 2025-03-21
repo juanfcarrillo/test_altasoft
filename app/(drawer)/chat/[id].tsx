@@ -166,8 +166,12 @@ export default function ChatScreen() {
                   ))}
                 </View>
               )}
-              <Text className="mt-1 text-right text-xs text-gray-500">
-                {new Date(msg.timestamp).toLocaleTimeString()}
+              <Text
+                className={`mt-1 text-right text-xs ${msg.role === 'user' ? 'text-gray-100' : 'text-gray-500'}`}>
+                {new Date(msg.timestamp).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
               </Text>
             </View>
           ))}

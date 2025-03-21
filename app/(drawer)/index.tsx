@@ -75,10 +75,7 @@ export default function Home() {
         }),
       };
 
-      const response = await fetch(
-        'https://n8n.pingai.online/webhook/e21a4376-8de6-40d8-adcc-e59c5d4c3d22',
-        options
-      );
+      const response = await fetch(`${process.env.EXPO_PUBLIC_N8N_URL}/webhook/chat`, options);
       const data = await response.json();
 
       // Add AI message

@@ -60,7 +60,7 @@ Deno.serve(async (req: Request) => {
     body: formData,
   };
 
-  const response = await fetch('https://n8n.pingai.online/webhook/add-document', options);
+  const response = await fetch(`${process.env.EXPO_PUBLIC_N8N_URL}/webhook/add-document`, options);
 
   if (!response.ok || response.status !== 201) {
     return new Response(JSON.stringify({ error: 'Error uploading document' }), {

@@ -24,6 +24,7 @@ export default function ChatScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
   const [editTitleModal, setEditTitleModal] = useState(false);
+  const isFetching = useRef(false);
 
   const handleEditTitle = () => {
     if (!currentChat) return;
@@ -69,6 +70,9 @@ export default function ChatScreen() {
   };
 
   async function makeApiCall() {
+    if (isFetching.current) return;
+    isFetching.current = true;
+
     try {
       const options = {
         method: 'POST',
@@ -82,10 +86,8 @@ export default function ChatScreen() {
         }),
       };
 
-      const response = await fetch(
-        'https://testaltasoft.app.n8n.cloud/webhook/e21a4376-8de6-40d8-adcc-e59c5d4c3d22',
-        options
-      );
+      const response = await fetch(`${process.env.EXPO_PUBLIC_N8N_URL}/webhook/chat`, options);
+
       const data = await response.json();
 
       const aiMessage = {
@@ -94,12 +96,14 @@ export default function ChatScreen() {
         content: data[0].output,
         timestamp: new Date(),
       };
+
       await addMessage(currentChat!.id, aiMessage);
     } catch (error) {
       console.error('Error generating AI response:', error);
       Alert.alert('Error', 'Failed to generate AI response');
     } finally {
       setIsLoading(false);
+      isFetching.current = false;
     }
   }
 

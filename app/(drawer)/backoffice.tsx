@@ -138,7 +138,7 @@ export default function Backoffice() {
         }}
       />
 
-      <View className="p-4">
+      <View className="flex-1 p-4">
         <View className="mb-6 rounded-lg bg-white p-4 shadow-sm">
           <Text className="mb-2 text-lg font-semibold text-gray-800">Send Invitation</Text>
           <View className="flex-row space-x-2">

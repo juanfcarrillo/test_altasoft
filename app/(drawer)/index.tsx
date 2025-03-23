@@ -140,12 +140,8 @@ export default function Home() {
           {currentChat.messages.map((msg) => (
             <View
               key={msg.id}
-              className={`mb-4 max-w-[80%] rounded-lg p-3 ${
-                msg.role === 'user' ? 'ml-auto bg-sky-500' : 'border border-gray-200 bg-white'
-              }`}>
-              <Text className={msg.role === 'user' ? 'text-white' : 'text-gray-800'}>
-                {msg.content}
-              </Text>
+              className={`mb-4 max-w-[80%] rounded-lg border border-gray-200 bg-white p-3 ${msg.role === 'user' && 'ml-auto'}`}>
+              <Text className="text-gray-800">{msg.content}</Text>
               {msg.codeSnippet && (
                 <View className="mt-2 rounded-md bg-gray-800 p-3">
                   <Text className="font-mono text-white">{msg.codeSnippet}</Text>
@@ -160,8 +156,7 @@ export default function Home() {
                   ))}
                 </View>
               )}
-              <Text
-                className={`mt-1 text-right text-xs ${msg.role === 'user' ? 'text-gray-100' : 'text-gray-500'}`}>
+              <Text className="mt-1 text-right text-xs text-gray-500">
                 {new Date(msg.timestamp).toLocaleTimeString([], {
                   hour: '2-digit',
                   minute: '2-digit',

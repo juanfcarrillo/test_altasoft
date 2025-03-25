@@ -43,8 +43,6 @@ async function sendEmail(options: {
       text: options.text || '',
       html: options.html || '',
     });
-
-    console.log('Email sent successfully!');
   } catch (error) {
     console.error('Error sending email:', error);
     throw error;
